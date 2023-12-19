@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+
+  postgres:
+    image: postgres:latest
+    container_name: dev-postgres
+
+    environment:
+      - POSTGRES_USER=a3data
+      - POSTGRES_PASSWORD=challengeTech
+      - POSTGRES_DB=a3data-db
+
+    volumes:
+      - ./.data/postgresql/data:/var/lib/postgresql/data
+
+    ports:
+      - '5432:5432'
+
+    networks:
+      - dev-network
+
+    restart: always 
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: dev-pgadmin
+    depends_on:
+      - postgres
+
+    ports:
+      - "5555:80"
+
+    environment:
+      PGADMIN_DEFAULT_EMAIL: pgadmin4@pgadmin.org
+      PGADMIN_DEFAULT_PASSWORD: admin
+
+    volumes:
+      - ./.data/pgadmin:/var/lib/pgadmin
+
+    networks:
+      - dev-network
+
+    restart: unless-stopped    
+
+networks:
+  dev-network:
+    driver: bridge
